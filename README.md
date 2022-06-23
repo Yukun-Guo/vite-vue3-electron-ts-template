@@ -41,6 +41,7 @@ npm install --save-dev electron@latest electron-builder concurrently
 #### Create file `src/electron/main/main.ts` and `src/electron/preload/preload.ts`
 
 ```ts {main.ts}
+// src/electron/main/main.ts
 import { join } from 'path';
 import {
     app,
@@ -94,7 +95,7 @@ app.on('window-all-closed', () => {
 ```
 
 ```js {preload.ts}
-// src/main/preload.ts
+// src/electron/preload/preload.ts
 // All of the Node.js APIs are available in the preload process.
 // It has the same sandbox as a Chrome extension.
 window.addEventListener('DOMContentLoaded', () => {
