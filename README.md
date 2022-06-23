@@ -24,7 +24,7 @@ import {
     BrowserWindow
 } from 'electron';
 
-const isDev = process.env.npm_lifecycle_event === "start:dev" ? true : false;
+const isDev = process.env.npm_lifecycle_event === "app:dev" ? true : false;
 
 function createWindow() {
     // Create the browser window.
@@ -124,30 +124,27 @@ window.addEventListener('DOMContentLoaded', () => {
   })
   ```
 
-## 6. Edit `package.json`, add `build` property
+## 6. Edit `package.json`
 
 ``` json
 {
   "name": "vite-vue3-electron-ts-template",
   "private": true,
   "version": "0.0.0",
-  "author": "Your Name",                                              // 1. add author
-  "main": "dist/electron/main/main.js",                               // 1. add electron entrance
+  "author": "Your Name",
+  "main": "dist/electron/main/main.js",
   "scripts": {
-    "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build",
-    "preview": "vite preview",
+    "vite:dev": "vite",
+    "vite:build": "vue-tsc --noEmit && vite build",
+    "vite:preview": "vite preview",
     "ts": "tsc",
     "watch": "tsc -w",
     "lint": "eslint -c .eslintrc --ext .ts ./src",
-    "electron:dev": "electron .",                                     // 1. add electron entrance
-    "electron:pack": "electron-builder --dir",                        // 1. just pack electron not build
-    "electron:builder": "electron-builder",                           // 1. build electron
-    "start:dev": "concurrently vite \" npm run ts\" \" electron .\"", // 1. start dev
-    "start:app": "npm run build && electron .",                       // 1. add app entrance
-    "app:build": "npm run build && npm run electron:builder"          // 1. build app
+    "app:dev": "tsc && concurrently vite \" electron .\" \"tsc -w\"",
+    "app:build": "npm run vite:build && tsc && electron-builder",
+    "app:preview": "npm run vite:build && tsc && electron ."
   },
-  "build": {                                                          // 1. build config for electron-builder
+  "build": {
     "appId": "YourAppID",
     "asar": true,
     "directories": {
@@ -199,17 +196,17 @@ window.addEventListener('DOMContentLoaded', () => {
 ### dev mode
 
 ```bash
-npm run start:dev  
+npm run app:dev  
 ```
 
-### run mode
+### preview mode
 
 ```bash
-npm run start:app  
+npm run app:preview  
 ```
 
 ### build app
 
 ```bash
-npm run app:build  
+npm run app:build
 ```

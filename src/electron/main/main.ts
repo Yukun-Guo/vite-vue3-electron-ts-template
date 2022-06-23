@@ -4,7 +4,7 @@ import {
     BrowserWindow
 } from 'electron';
 
-const isDev = process.env.npm_lifecycle_event === "start:dev" ? true : false;
+const isDev = process.env.npm_lifecycle_event === "app:dev" ? true : false;
 
 function createWindow() {
     // Create the browser window.

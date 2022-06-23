@@ -5,18 +5,15 @@
   "author": "Your Name",
   "main": "dist/electron/main/main.js",
   "scripts": {
-    "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build",
-    "preview": "vite preview",
+    "vite:dev": "vite",
+    "vite:build": "vue-tsc --noEmit && vite build",
+    "vite:preview": "vite preview",
     "ts": "tsc",
     "watch": "tsc -w",
     "lint": "eslint -c .eslintrc --ext .ts ./src",
-    "electron:dev": "electron .",
-    "electron:pack": "electron-builder --dir",
-    "electron:builder": "electron-builder",
-    "start:dev": "concurrently vite \" npm run ts\" \" electron .\"",
-    "start:app": "npm run build && electron .",
-    "app:build": "npm run build && npm run ts && npm run electron:builder"
+    "app:dev": "tsc && concurrently vite \" electron .\" \"tsc -w\"",
+    "app:build": "npm run vite:build && tsc && electron-builder",
+    "app:preview": "npm run vite:build && tsc && electron ."
   },
   "build": {
     "appId": "YourAppID",
