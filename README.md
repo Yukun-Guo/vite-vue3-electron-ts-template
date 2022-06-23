@@ -1,16 +1,215 @@
-# Vue 3 + TypeScript + Vite
+# Create Vite + Vue 3 + Electron + TypeScript
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+## 1. [create Vite project](https://vitejs.dev/guide/#trying-vite-online)
 
-## Recommended IDE Setup
+```bash
+npm create vite@latest
+```
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar)
+## 2. Install [electron](https://www.electronjs.org/docs/latest/tutorial/quick-start) and [concurrently](https://www.npmjs.com/package/concurrently)
 
-## Type Support For `.vue` Imports in TS
+```bash
+npm install --save-dev electron@latest electron-builder concurrently
+```
 
-Since TypeScript cannot handle type information for `.vue` imports, they are shimmed to be a generic Vue component type by default. In most cases this is fine if you don't really care about component prop types outside of templates. However, if you wish to get actual prop types in `.vue` imports (for example to get props validation when using manual `h(...)` calls), you can enable Volar's Take Over mode by following these steps:
+## 3. setup electron
 
-1. Run `Extensions: Show Built-in Extensions` from VS Code's command palette, look for `TypeScript and JavaScript Language Features`, then right click and select `Disable (Workspace)`. By default, Take Over mode will enable itself if the default TypeScript extension is disabled.
-2. Reload the VS Code window by running `Developer: Reload Window` from the command palette.
 
-You can learn more about Take Over mode [here](https://github.com/johnsoncodehk/volar/discussions/471).
+### Create file `src/electron/main/main.ts` and `src/electron/preload/preload.ts`
+
+```ts {main.ts}
+import { join } from 'path';
+import {
+    app,
+    BrowserWindow
+} from 'electron';
+
+const isDev = process.env.npm_lifecycle_event === "start:dev" ? true : false;
+
+function createWindow() {
+    // Create the browser window.
+    const mainWindow = new BrowserWindow({
+        width: 800,
+        height: 600,
+        webPreferences: {
+            preload: join(__dirname, '../preload/preload.js'),
+        },
+    });
+
+    // and load the index.html of the app.
+    mainWindow.loadURL(
+        isDev ?
+        'http://localhost:3000' :
+        join(__dirname, '../../index.html')
+    );
+    // Open the DevTools.
+    if (isDev) {
+        mainWindow.webContents.openDevTools();
+    }
+}
+
+// This method will be called when Electron has finished
+// initialization and is ready to create browser windows.
+// Some APIs can only be used after this event occurs.
+app.whenReady().then(() => {
+    createWindow()
+    app.on('activate', function () {
+        // On macOS it's common to re-create a window in the app when the
+        // dock icon is clicked and there are no other windows open.
+        if (BrowserWindow.getAllWindows().length === 0) createWindow()
+    })
+});
+
+// Quit when all windows are closed, except on macOS. There, it's common
+// for applications and their menu bar to stay active until the user quits
+// explicitly with Cmd + Q.
+app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') {
+        app.quit();
+    }
+});
+```
+
+```js {preload.ts}
+// src/main/preload.ts
+// All of the Node.js APIs are available in the preload process.
+// It has the same sandbox as a Chrome extension.
+window.addEventListener('DOMContentLoaded', () => {
+    const replaceText = (selector:any, text:any) => {
+      const element = document.getElementById(selector)
+      if (element) element.innerText = text
+    }
+
+    for (const dependency of ['chrome', 'node', 'electron']) {
+      replaceText(`${dependency}-version`, process.versions[dependency])
+    }
+  })
+```
+
+## 4 Edit `tsconfig.json`
+
+```ts
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "useDefineForClassFields": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "strict": true,
+    "jsx": "preserve",
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "isolatedModules": false,
+    "esModuleInterop": true,
+    "lib": ["esnext", "dom"],
+    "skipLibCheck": true,
+    "outDir": "dist/electron"
+  },
+  "include": ["src/electron/**/*"],
+  "references": [{
+    "path": "./tsconfig.node.json"
+  }]
+}
+```
+
+## 5. Edit `vite.config.ts`
+  
+  ```ts {vite.config.ts}
+  import { defineConfig } from 'vite'
+  import vue from '@vitejs/plugin-vue'
+  // https://vitejs.dev/config/
+  export default defineConfig({
+    plugins: [vue()],
+    base: './' //add base path
+  })
+  ```
+
+## 6. Edit `package.json`, add `build` property
+
+``` json
+{
+  "name": "vite-vue3-electron-ts-template",
+  "private": true,
+  "version": "0.0.0",
+  "author": "Your Name",                                              // 1. add author
+  "main": "dist/electron/main/main.js",                               // 1. add electron entrance
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "ts": "tsc",
+    "watch": "tsc -w",
+    "lint": "eslint -c .eslintrc --ext .ts ./src",
+    "electron:dev": "electron .",                                     // 1. add electron entrance
+    "electron:pack": "electron-builder --dir",                        // 1. just pack electron not build
+    "electron:builder": "electron-builder",                           // 1. build electron
+    "start:dev": "concurrently vite \" npm run ts\" \" electron .\"", // 1. start dev
+    "start:app": "npm run build && electron .",                       // 1. add app entrance
+    "app:build": "npm run build && npm run electron:builder"          // 1. build app
+  },
+  "build": {                                                          // 1. build config for electron-builder
+    "appId": "YourAppID",
+    "asar": true,
+    "directories": {
+      "buildResources": "assets",
+      "output": "release/${version}"
+    },
+    "files": [
+      "dist"
+    ],
+    "mac": {
+      "artifactName": "${productName}_${version}.${ext}",
+      "target": [
+        "dmg"
+      ]
+    },
+    "win": {
+      "target": [{
+        "target": "nsis",
+        "arch": [
+          "x64"
+        ]
+      }],
+      "artifactName": "${productName}_${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "deleteAppDataOnUninstall": false
+    }
+  },
+  "dependencies": {
+    "vue": "^3.2.25"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^2.3.3",
+    "concurrently": "^7.2.2",
+    "electron": "^19.0.6",
+    "electron-builder": "^23.1.0",
+    "typescript": "^4.5.4",
+    "vite": "^2.9.9",
+    "vue-tsc": "^0.34.7"
+  }
+}
+```
+
+## 7. Run
+
+### dev mode
+
+```bash
+npm run start:dev  
+```
+
+### run mode
+
+```bash
+npm run start:app  
+```
+
+### build app
+
+```bash
+npm run app:build  
+```

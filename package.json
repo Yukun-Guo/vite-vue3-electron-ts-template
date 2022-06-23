@@ -16,7 +16,7 @@
     "electron:builder": "electron-builder",
     "start:dev": "concurrently vite \" npm run ts\" \" electron .\"",
     "start:app": "npm run build && electron .",
-    "app:build": "npm run build && npm run electron:builder"
+    "app:build": "npm run build && npm run ts && npm run electron:builder"
   },
   "build": {
     "appId": "YourAppID",
