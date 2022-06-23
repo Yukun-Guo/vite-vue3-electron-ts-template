@@ -109,7 +109,7 @@ window.addEventListener('DOMContentLoaded', () => {
   })
 ```
 
-### 4 Edit `tsconfig.json`
+### 4. Edit `tsconfig.json`
 
 ```ts
 {
