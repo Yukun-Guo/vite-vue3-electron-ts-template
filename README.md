@@ -1,21 +1,43 @@
-# Create Vite + Vue 3 + Electron + TypeScript
+# Vite+Vue3+Electron+Typescript template
 
-## 1. [create Vite project](https://vitejs.dev/guide/#trying-vite-online)
+## Get Started
+
+### 1. clone this repository
+
+```bash
+git clone https://github.com/Yukun-Guo/vite-vue3-electron-ts-template.git
+```
+
+### 2. install packages
+
+```bash
+npm i
+```
+
+### 3. run
+
+```bash
+npm run app:dev
+```
+
+## How to create this template?
+
+### 1. [create Vite project](https://vitejs.dev/guide/#trying-vite-online)
 
 ```bash
 npm create vite@latest
 ```
 
-## 2. Install [electron](https://www.electronjs.org/docs/latest/tutorial/quick-start) and [concurrently](https://www.npmjs.com/package/concurrently)
+### 2. Install [electron](https://www.electronjs.org/docs/latest/tutorial/quick-start) and [concurrently](https://www.npmjs.com/package/concurrently)
 
 ```bash
 npm install --save-dev electron@latest electron-builder concurrently
 ```
 
-## 3. setup electron
+### 3. setup electron
 
 
-### Create file `src/electron/main/main.ts` and `src/electron/preload/preload.ts`
+#### Create file `src/electron/main/main.ts` and `src/electron/preload/preload.ts`
 
 ```ts {main.ts}
 import { join } from 'path';
@@ -86,7 +108,7 @@ window.addEventListener('DOMContentLoaded', () => {
   })
 ```
 
-## 4 Edit `tsconfig.json`
+### 4 Edit `tsconfig.json`
 
 ```ts
 {
@@ -112,7 +134,7 @@ window.addEventListener('DOMContentLoaded', () => {
 }
 ```
 
-## 5. Edit `vite.config.ts`
+### 5. Edit `vite.config.ts`
   
   ```ts {vite.config.ts}
   import { defineConfig } from 'vite'
@@ -124,7 +146,7 @@ window.addEventListener('DOMContentLoaded', () => {
   })
   ```
 
-## 6. Edit `package.json`
+### 6. Edit `package.json`
 
 ``` json
 {
