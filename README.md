@@ -1,5 +1,7 @@
 # Vite+Vue3+Electron+Typescript template
 
+![screenshot](./src/assets/screenshot.png)
+
 ## Get Started
 
 ### 1. clone this repository
@@ -35,7 +37,6 @@ npm install --save-dev electron@latest electron-builder concurrently
 ```
 
 ### 3. setup electron
-
 
 #### Create file `src/electron/main/main.ts` and `src/electron/preload/preload.ts`
 
