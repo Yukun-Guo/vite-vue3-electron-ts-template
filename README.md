@@ -215,7 +215,27 @@ window.addEventListener('DOMContentLoaded', () => {
 }
 ```
 
-## 7. Run
+## 7. Setup Main Process debug configuration: create `launch.json` to `.vscode` folder
+
+``` json
+{
+    "version": "0.2.0",
+    "configurations": [{
+        "name": "Debug Main Process",
+        "type": "node",
+        "request": "launch",
+        "cwd": "${workspaceFolder}",
+        "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
+        "windows": {
+            "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
+        },
+        "args": ["."],
+        "outputCapture": "std"
+    }]
+}
+```
+
+## 8. Run
 
 ### dev mode
 
