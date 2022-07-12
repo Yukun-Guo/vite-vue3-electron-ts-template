@@ -3,7 +3,7 @@
     "configurations": [{
         "name": "Debug Main Process",
         "type": "node",
-        "request": "launch",
+        "request": "launch", 
         "cwd": "${workspaceFolder}",
         "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
         "windows": {
