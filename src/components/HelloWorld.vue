@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref } from "vue";
+import { storeToRefs } from "pinia";
+import { useCounterStore } from "../store/counter";
+defineProps<{ msg: string }>();
 
-defineProps<{ msg: string }>()
-
-const count = ref(0)
+const { count } = storeToRefs(useCounterStore());
 </script>
 
 <template>
@@ -19,9 +20,7 @@ const count = ref(0)
   <p>See <code>README.md</code> for more information.</p>
 
   <p>
-    <a href="https://vitejs.dev/guide/features.html" target="_blank">
-      Vite Docs
-    </a>
+    <a href="https://vitejs.dev/guide/features.html" target="_blank"> Vite Docs </a>
     |
     <a href="https://v3.vuejs.org/" target="_blank">Vue 3 Docs</a>
   </p>
@@ -31,6 +30,16 @@ const count = ref(0)
     Edit
     <code>components/HelloWorld.vue</code> to test hot module replacement.
   </p>
+  <p>
+    <!-- use the router-link component for navigation. -->
+    <!-- specify the link by passing the `to` prop. -->
+    <!-- `<router-link>` will render an `<a>` tag with the correct `href` attribute -->
+    <router-link to="/home" class="routerlink">Go to Home</router-link>
+    <router-link to="/about" class="routerlink">Go to About</router-link>
+  </p>
+  <!-- route outlet -->
+  <!-- component matched by the route will render here -->
+  <router-view />
 </template>
 
 <style scoped>
@@ -48,5 +57,8 @@ code {
   padding: 2px 4px;
   border-radius: 4px;
   color: #304455;
+}
+.routerlink {
+  margin: 0 10px;
 }
 </style>
