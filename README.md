@@ -61,15 +61,17 @@ function createWindow() {
     });
 
     // and load the index.html of the app.
-    mainWindow.loadURL(
-        isDev ?
-        'http://localhost:3000' :
-        join(__dirname, '../../index.html')
-    );
-    // Open the DevTools.
     if (isDev) {
-        mainWindow.webContents.openDevTools();
+        mainWindow.loadURL('http://localhost:3000');
+        mainWindow.webContents.openDevTools();// Open the DevTools.
+    } else {
+        mainWindow.loadFile(join(__dirname, '../../index.html'));
     }
+    // mainWindow.loadURL( //this doesn't work on macOS in build and preview mode
+    //     isDev ?
+    //     'http://localhost:3000' :
+    //     join(__dirname, '../../index.html')
+    // );
 }
 
 // This method will be called when Electron has finished
