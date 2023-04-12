@@ -266,4 +266,4 @@ npm run app:build
 ## Update
 
 ### 2022/08/16: add `pinia`:pineapple: and `vue-router`
-### 2023/04/11: add an example of how to load image from `assets` in components (Home and About page)
+### 2023/04/12: add an example of how to load image from `assets` in components (Home and About page)
