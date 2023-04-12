@@ -1,7 +1,7 @@
 {
   "name": "vite-vue3-electron-ts-template",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "author": "Your Name",
   "main": "dist/electron/main/main.js",
   "scripts": {
