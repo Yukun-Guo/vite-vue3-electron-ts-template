@@ -5,6 +5,11 @@ import { useCounterStore } from "../store/counter";
 defineProps<{ msg: string }>();
 
 const { count } = storeToRefs(useCounterStore());
+const filePath = ref(null);
+const openFile = async () => {
+  //@ts-ignore
+  filePath.value = await window.electronAPI.openFile();
+};
 </script>
 
 <template>
@@ -26,6 +31,11 @@ const { count } = storeToRefs(useCounterStore());
   </p>
 
   <button type="button" @click="count++">count is: {{ count }}</button>
+  <div id="examples">
+    <button type="button" @click="openFile()">Open a File</button>
+    <p v-if="filePath">File Path: {{ filePath }}</p>
+  </div>
+
   <p>
     Edit
     <code>components/HelloWorld.vue</code> to test hot module replacement.
@@ -60,5 +70,10 @@ code {
 }
 .routerlink {
   margin: 0 10px;
+}
+#examples {
+  margin: 10px;
+  display: flex;
+  background-color: beige;
 }
 </style>
